@@ -1,0 +1,9 @@
+# Node modules
+node_modules/
+
+# Static web content
+www/*
+!www/.gitkeep
+
+# SQLite database
+*.sqlite
