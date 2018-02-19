@@ -4,47 +4,27 @@
 
 var express = require('express');
 var models = require('./models');
-var auth = require('./auth/auth');
-var app = express();
 
+var app = express();
 app.use(express.json());
 
-app.get('/', function(req, res) {
+var api = express.Router();
+
+var login = require('./routes/login');
+// Other API routes here
+
+api.use('/login', login);
+api.get('/', function(req, res) {
     res.send("Node API Running");
 });
+
+app.use('/api', api);
 
 app.get('/users', function(req, res) {
     models.User.findAll()
     .then(users => {
         res.json(users);
     })
-});
-
-app.post('/login', function(req, res) {
-    var token = req.body.token;
-    
-    //console.log('Token:', token);
-    
-    auth(token, (payload => {
-        console.log(payload.name);
-        
-        models.User.findOrCreate({
-            where: {
-                googleid: payload.sub
-            },
-            defaults: {
-                firstname: payload.given_name,
-                lastname: payload.family_name,
-                email: payload.email
-            }
-        })
-        .then(user => {
-            res.json(user[0]);
-        })
-        
-    }), (error => {
-        res.end();
-    }));
 });
 
 app.get('*', function(req, res) {
