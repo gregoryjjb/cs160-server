@@ -11,6 +11,7 @@ var authenticate = (idToken, onSuccess, onFailure) => {
     })
     .catch(error => {
         console.log("Error occured");
+        //console.log(error);
         if(onFailure) onFailure(error);
     });
 }

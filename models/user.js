@@ -2,7 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
     var User = sequelize.define('User', {
-        googleid: {
+        googleId: {
             type: DataTypes.STRING,
             unique: true
         },
@@ -11,6 +11,11 @@ module.exports = (sequelize, DataTypes) => {
         email: {
             type: DataTypes.STRING,
             isEmail: true
+        },
+        sessionId: DataTypes.STRING,
+        loginDate: {
+            type: DataTypes.DATE,
+            defaultValue: DataTypes.NOW
         }
     });
     
