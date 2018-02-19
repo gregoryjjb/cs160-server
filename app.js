@@ -15,16 +15,13 @@ var login = require('./routes/login');
 
 api.use('/login', login);
 api.get('/', function(req, res) {
-    res.send("Node API Running");
+    res.send("Node API running!");
 });
 
 app.use('/api', api);
 
-app.get('/users', function(req, res) {
-    models.User.findAll()
-    .then(users => {
-        res.json(users);
-    })
+app.get('/', function(req, res) {
+    res.send("Node server running!");
 });
 
 app.get('*', function(req, res) {
