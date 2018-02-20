@@ -1,6 +1,6 @@
 # Server
 
-## To Install:
+## Installation:
 
 * Download [Node](https://nodejs.org/) (including NPM)
 * Install SQLite
