@@ -77,7 +77,7 @@ router.post('/', (req, res) => {
         
     }), (error => {
         console.log("LOGIN SAW ERROR", error.message);
-        res.json({
+        res.status(400).json({
             error: error.message
         });
     }));
