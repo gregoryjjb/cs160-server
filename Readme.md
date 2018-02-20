@@ -12,4 +12,8 @@
   > npm install
 * Once it's done installing run
   > npm start
-* Your server will be running at localhost:4000
+* Your server will be running at [localhost:4000](http://localhost:4000), try navigating to it and to [/api](http://localhost:4000/api).
+
+### Communication with the Frontend
+
+No frontend is provided with this; you need to clone and run the [frontend repo](https://github.com/gregdumb/cs160-frontend) separately. The React development server will proxy asynchronous calls from :3000 to :4000, simulating the production environment. In the final product the production build of the frontend will reside under www/ and be served by this server.
