@@ -13,7 +13,7 @@ var api = express.Router();
 var login = require('./routes/login');
 // Other API routes here
 
-api.use('/login', login);
+api.use('/', login);
 api.get('/', function(req, res) {
     res.send("Node API running!");
 });

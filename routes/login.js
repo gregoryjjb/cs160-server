@@ -12,9 +12,11 @@ var session = require('../auth/session');
 /** 
  * Required body: {
  *   token: ID_TOKEN
+ *   OR (@todo)
+ *   session: SESSION_ID (for continuing an old session)
  * }
  */
-router.post('/', (req, res) => {
+router.post('/login', (req, res) => {
     const token = req.body.token;
     
     const sessionKey = session.generateKey(token.substr(0, 30))
@@ -58,29 +60,17 @@ router.post('/', (req, res) => {
             }
         });
         
-        /*
-        // Old way, didn't update session or login date
-        models.User.findOrCreate({
-            where: {
-                googleId: payload.sub
-            },
-            defaults: {
-                firstname: payload.given_name,
-                lastname: payload.family_name,
-                email: payload.email,
-                sessionId: sessionKey
-            }
-        })
-        .then(user => {
-            res.json(user[0]);
-        })*/
-        
     }), (error => {
         console.log("LOGIN SAW ERROR", error.message);
         res.status(400).json({
             error: error.message
         });
     }));
+});
+
+router.get('/logout', (req, res) => {
+    console.log(req.headers.authorization);
+    res.end();
 });
 
 module.exports = router;
