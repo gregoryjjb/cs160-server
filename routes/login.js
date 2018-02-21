@@ -69,8 +69,23 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/logout', (req, res) => {
-    console.log(req.headers.authorization);
-    res.end();
+
+    var sessionId = req.headers.authorization;
+
+    models.User.findOne({where: {
+        sessionId: sessionId
+    }})
+    .then(user => {
+        user.updateAttributes({
+            sessionId: null
+        })
+        .then(() => {
+            res.end();
+        });
+    })
+    .catch(error => {
+        res.status(400).end();
+    });
 });
 
 module.exports = router;
