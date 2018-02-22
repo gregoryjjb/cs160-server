@@ -16,6 +16,4 @@ var authenticate = (idToken, onSuccess, onFailure) => {
     });
 }
 
-
-    
 module.exports = authenticate;
