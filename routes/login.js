@@ -92,16 +92,12 @@ router.get('/logout', (req, res) => {
 
     var sessionId = req.headers.authorization;
 
-    models.User.findOne({where: {
-        sessionId: sessionId
-    }})
-    .then(user => {
-        return user.updateAttributes({
-            sessionId: null
-        })
-    })
-    .catch(error => {
-        res.status(400).end();
+    models.User.update({
+        sessionId: null
+    }, {
+        where: {
+            sessionId: sessionId
+        }
     })
     .then(() => {
         res.end();
