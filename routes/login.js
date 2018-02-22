@@ -79,7 +79,7 @@ router.post('/login', (req, res) => {
                 });
             }
             else {
-                res.status(401).end();
+                res.status(400).end();
             }
         })
         .catch(error => {
