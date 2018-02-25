@@ -6,5 +6,9 @@ module.exports = (sequelize, DataTypes) => {
         length: DataTypes.FLOAT
     });
     
+    Video.associate = (models) => {
+        models.Video.belongsTo(models.User, {foreignKey: 'userId'});
+    }
+    
     return Video;
 };
