@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
+var authorization = require('../auth/authorization');
+
+router.use(authorization);
 
 router.route('/')
 .get((req, res) => {
@@ -10,7 +13,9 @@ router.route('/')
 router.route('/:userId')
 .get((req, res) => {
     
-    var userId = req.params.userId;
+    console.log(res.locals);
+    
+    var userId = res.locals.userId; //req.params.userId;
     
     models.Video.findAll({
         where: {userId: userId}
