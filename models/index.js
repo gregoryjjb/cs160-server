@@ -19,6 +19,9 @@ sequelize
     .then(() => {
         console.log('Database connection established');
         console.log('\tDialect:', config.db.dialect);
+        console.log('\tUsername:', config.db.username);
+        console.log('\tDatabase:', config.db.database);
+        console.log('\tHost:', config.db.host);
     })
     .catch(err => {
         console.error('Unable to connect to the database:', err);

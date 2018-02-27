@@ -18,4 +18,34 @@
 
 No frontend is provided with this; you need to clone and run the [frontend repo](https://github.com/gregdumb/cs160-frontend) separately. The React development server will proxy asynchronous calls from :3000 to :4000, simulating the production environment. In the final product the production build of the frontend will reside under www/ and be served by this server.
 
-Commit test
+## API Reference
+
+* Authentication
+  * **POST api/login** - Logs in user, creating new if needed
+    ```
+    authorization: none
+    
+    body: {
+      token: <Google token> // For new login
+      OR
+      sessionId: <Session ID> // For continuing existing session
+    }
+    
+    returns: {
+      firstLogin: <boolean>,
+      user: {
+        firstname: <string>,
+        lastname: <string>,
+        email: <email>,
+        sessionId: <string>
+      }
+    }
+    ```
+    Returns status 400 if Google token or session ID is invalid.
+    
+  * **GET api/logout** - Clears user's session on server
+    ```
+    authorization: <sessionId> // Send session ID as auth header
+    returns: none
+    ```
+    Returns status 200 under all circumstances.

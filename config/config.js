@@ -7,7 +7,7 @@ module.exports = {
             storage: './db/db.development.sqlite',
             logging: false,
             operatorsAliases: Sequelize.Op,
-            sync: {force: true}
+            sync: {force: false}
         }
     },
     production: {

@@ -12,75 +12,96 @@ var session = require('../auth/session');
 /** 
  * Required body: {
  *   token: ID_TOKEN
+ *   OR (@todo)
+ *   session: SESSION_ID (for continuing an old session)
  * }
  */
-router.post('/', (req, res) => {
+router.post('/login', (req, res) => {
     const token = req.body.token;
+    const sessionId = req.body.sessionId;
     
-    const sessionKey = session.generateKey(token.substr(0, 30))
-    console.log("KEY", sessionKey);
-    
-    auth(token, (payload => {
-        console.log(payload.name);
+    if(token) {
+        const sessionKey = session.generateKey(token.substr(0, 30))
         
-        models.User.findOne({
-            where: { googleId: payload.sub }
-        })
+        auth(token, (payload => {
+            
+            models.User.findOne({
+                where: { googleId: payload.sub }
+            })
+            .then(user => {
+                if(user) {
+                    // Update session and login time of existing user
+                    user.updateAttributes({
+                        sessionId: sessionKey,
+                        loginDate: new Date()
+                    }) 
+                    .then(user => {
+                        res.json({
+                            user: user,
+                            firstLogin: false
+                        });
+                    })
+                }
+                else {
+                    // Create new user for first login
+                    models.User.create({
+                        googleId: payload.sub,
+                        firstname: payload.given_name,
+                        lastname: payload.family_name,
+                        email: payload.email,
+                        sessionId: sessionKey
+                    })
+                    .then(user => {
+                        res.json({
+                            user: user,
+                            firstLogin: true
+                        });
+                    })
+                }
+            });
+            
+        }), (error => {
+            console.log("Login error", error.message);
+            res.status(400).json({
+                error: error.message
+            });
+        }));
+    }
+    else if(sessionId) {
+        models.User.findOne({where: {
+            sessionId: sessionId
+        }})
         .then(user => {
             if(user) {
-                // Update session and login time of existing user
-                user.updateAttributes({
-                    sessionId: sessionKey,
-                    loginDate: new Date()
-                }) 
-                .then(user => {
-                    res.json({
-                        user: user,
-                        firstLogin: false
-                    });
-                })
+                res.json({
+                    user: user,
+                    firstLogin: false
+                });
             }
             else {
-                // Create new user for first login
-                models.User.create({
-                    googleId: payload.sub,
-                    firstname: payload.given_name,
-                    lastname: payload.family_name,
-                    email: payload.email,
-                    sessionId: sessionKey
-                })
-                .then(user => {
-                    res.json({
-                        user: user,
-                        firstLogin: true
-                    });
-                })
-            }
-        });
-        
-        /*
-        // Old way, didn't update session or login date
-        models.User.findOrCreate({
-            where: {
-                googleId: payload.sub
-            },
-            defaults: {
-                firstname: payload.given_name,
-                lastname: payload.family_name,
-                email: payload.email,
-                sessionId: sessionKey
+                res.status(400).end();
             }
         })
-        .then(user => {
-            res.json(user[0]);
-        })*/
-        
-    }), (error => {
-        console.log("LOGIN SAW ERROR", error.message);
-        res.status(400).json({
-            error: error.message
+        .catch(error => {
+            res.status(400).end();
         });
-    }));
+    }
+});
+
+router.get('/logout', (req, res) => {
+
+    var sessionId = req.headers.authorization;
+
+    models.User.update({
+        sessionId: null
+    }, {
+        where: {
+            sessionId: sessionId
+        }
+    })
+    .then(() => {
+        res.end();
+    });
 });
 
 module.exports = router;

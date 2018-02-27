@@ -11,9 +11,11 @@ app.use(express.json());
 var api = express.Router();
 
 var login = require('./routes/login');
+var videos = require('./routes/videos');
 // Other API routes here
 
-api.use('/login', login);
+api.use('/', login);
+api.use('/videos', videos);
 api.get('/', function(req, res) {
     res.send("Node API running!");
 });

@@ -19,5 +19,9 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
     
+    User.associate = (models) => {
+        models.User.hasMany(models.Video, {foreignKey: 'userId'});
+    }
+    
     return User;
 };
