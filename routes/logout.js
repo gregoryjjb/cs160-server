@@ -13,9 +13,9 @@ router.get('/', (req, res) => {
             sessionId: sessionId
         }
     })
-        .then(() => {
-            res.end();
-        });
+	.then(() => {
+		res.end();
+	});
 });
 
 module.exports = router;
