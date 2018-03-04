@@ -9,6 +9,30 @@ router.route('/')
 .get((req, res) => {
     res.send("Videos go here")
 })
+.post((req, res) => {
+    /** 
+     * body: {
+     *   videoData: {
+     *     name: NAME
+     *   }
+     * }
+     */
+
+    var videoData = {
+        name: req.body.videoData.name,
+        userId: res.locals.userId
+    }
+
+    //console.log("Would make new video", videoData);
+
+    models.Video.create(videoData)
+    .then(video => {
+        res.json(video);
+    })
+    .catch(error => {
+        res.end();
+    })
+})
 
 router.route('/:userId')
 .get((req, res) => {

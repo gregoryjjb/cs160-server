@@ -16,7 +16,7 @@ var session = require('../auth/session');
  *   session: SESSION_ID (for continuing an old session)
  * }
  */
-router.post('/login', (req, res) => {
+router.post('/', (req, res) => {
     const token = req.body.token;
     const sessionId = req.body.sessionId;
     
