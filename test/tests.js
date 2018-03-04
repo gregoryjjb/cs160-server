@@ -5,6 +5,7 @@ const app = require('../app');
 
 const SESSION_ID = 'valid_session_id';
 const INVALID_SID = 'invalid_session_id';
+const INVALID_TID = 'invalid_token_id';
 
 const expect = chai.expect;
 chai.use(chai_http);
@@ -40,6 +41,20 @@ describe('POST /login', function() {
 		.post('/api/login')
 		.send({
 			sessionId: INVALID_SID
+		})
+		.catch(err => err.response)
+		.then(res => {
+			expect(res).to.have.status(400);
+			expect(res).to.be.json;
+			expect(res.body.error).to.exist;
+		})
+	})
+	
+	it('should prevent sign-in with invalid Google token ID and return error', function() {
+		return chai.request(app)
+		.post('/api/login')
+		.send({
+			token: INVALID_TID
 		})
 		.catch(err => err.response)
 		.then(res => {

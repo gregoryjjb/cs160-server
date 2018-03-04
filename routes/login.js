@@ -61,7 +61,6 @@ router.post('/', (req, res) => {
             });
             
         }), (error => {
-            console.log("Login error", error.message);
             res.status(400).json({
                 error: error.message
             });
