@@ -9,7 +9,16 @@ module.exports = {
             operatorsAliases: Sequelize.Op,
             sync: {force: false}
         }
-    },
+	},
+	test: {
+		db: {
+			dialect: 'sqlite',
+			storage: './db/db.test.sqlite',
+			logging: false,
+			operatorsAliases: Sequelize.Op,
+			sync: {force: true}
+		}	
+	},
     production: {
         db: {
             username: process.env.DB_USERNAME,

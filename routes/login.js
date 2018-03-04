@@ -79,11 +79,15 @@ router.post('/', (req, res) => {
                 });
             }
             else {
-                res.status(400).end();
+                res.status(400).json({
+					error: 'Session ID not found'
+				});
             }
         })
         .catch(error => {
-            res.status(400).end();
+            res.status(400).json({
+				error: error.message
+			});
         });
     }
 });

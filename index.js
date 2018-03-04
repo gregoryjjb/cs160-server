@@ -21,3 +21,5 @@ models.sequelize.sync()
     console.log("\tPort:", port);
     console.log("\tEnvironment:", env);
 });
+
+module.exports = server;
