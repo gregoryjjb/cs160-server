@@ -26,11 +26,11 @@ app.get('/', function(req, res) {
     res.send("Node server running!");
 });
 
+app.use(express.static('www'));
+
 app.get('*', function(req, res) {
     res.status(404).send("404 Not Found");
 });
-
-app.use(express.static('www'));
 
 // Error handling
 
