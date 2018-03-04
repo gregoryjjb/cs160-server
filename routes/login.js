@@ -88,20 +88,4 @@ router.post('/', (req, res) => {
     }
 });
 
-router.get('/logout', (req, res) => {
-
-    var sessionId = req.headers.authorization;
-
-    models.User.update({
-        sessionId: null
-    }, {
-        where: {
-            sessionId: sessionId
-        }
-    })
-    .then(() => {
-        res.end();
-    });
-});
-
 module.exports = router;
