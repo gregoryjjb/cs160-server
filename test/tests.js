@@ -10,18 +10,25 @@ const INVALID_TID = 'invalid_token_id';
 const expect = chai.expect;
 chai.use(chai_http);
 
-beforeEach(async function() {
+before(async () => {
 	
 	await models.sequelize.sync();
 	
 	await models.User.bulkCreate([
-		{ googleId: '0123ABCD', firstname: 'John', lastname: 'Smith', email: 'john.smith@gmail.com', sessionId: SESSION_ID }
+		{ googleId: '0123ABCD', firstname: 'John', lastname: 'Smith', email: 'john.smith@gmail.com', sessionId: SESSION_ID },
+		{ googleId: '4567EFGH', firstname: 'Dick', lastname: 'Smith', email: 'dick.smith@gmail.com', sessionId: null }
+	]);
+	
+	await models.Video.bulkCreate([
+		{ name: 'Video1', length: 10, userId: 1 },
+		{ name: 'Video2', length: 10, userId: 1 },
+		{ name: 'Video2', length: 10, userId: 2 }
 	]);
 })
 
-describe('POST /login', function() {
+describe('POST /login', () => {
 	
-	it('should allow return sign-in with valid session ID and return user', function() {
+	it('should allow return sign-in with valid session ID and return user', () => {
 		return chai.request(app)
 		.post('/api/login')
 		.send({
@@ -36,7 +43,7 @@ describe('POST /login', function() {
 		})
 	})
 	
-	it('should prevent sign-in with invalid session ID and return error', function() {
+	it('should prevent sign-in with invalid session ID and return error', () => {
 		return chai.request(app)
 		.post('/api/login')
 		.send({
@@ -50,7 +57,7 @@ describe('POST /login', function() {
 		})
 	})
 	
-	it('should prevent sign-in with invalid Google token ID and return error', function() {
+	it('should prevent sign-in with invalid Google token ID and return error', () => {
 		return chai.request(app)
 		.post('/api/login')
 		.send({
@@ -61,6 +68,33 @@ describe('POST /login', function() {
 			expect(res).to.have.status(400);
 			expect(res).to.be.json;
 			expect(res.body.error).to.exist;
+		})
+	})
+})
+
+describe('GET /videos/:userId', () => {
+	
+	it('should get videos only belonging to this user', () => {
+		return chai.request(app)
+		.get('/api/videos/1')
+		.set('Authorization', SESSION_ID)
+		.then(res => {
+			expect(res).to.have.status(200);
+			expect(res).to.be.json;
+			expect(res.body).to.have.lengthOf(2);
+			expect(res.body[0]).to.include({ name: 'Video1', length: 10, userId: 1 });
+			expect(res.body[1]).to.include({ name: 'Video2', length: 10, userId: 1 });
+		})
+	})
+	
+	it('should refuse if authorization session id is incorrect', () => {
+		return chai.request(app)
+		.get('/api/videos/1')
+		.set('Authorization', INVALID_SID)
+		.catch(err => err.response)
+		.then(res => {
+			expect(res).to.have.status(401);
+			
 		})
 	})
 })
