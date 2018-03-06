@@ -61,7 +61,6 @@ router.post('/', (req, res) => {
             });
             
         }), (error => {
-            console.log("Login error", error.message);
             res.status(400).json({
                 error: error.message
             });
@@ -79,11 +78,15 @@ router.post('/', (req, res) => {
                 });
             }
             else {
-                res.status(400).end();
+                res.status(400).json({
+					error: 'Session ID not found'
+				});
             }
         })
         .catch(error => {
-            res.status(400).end();
+            res.status(400).json({
+				error: error.message
+			});
         });
     }
 });
