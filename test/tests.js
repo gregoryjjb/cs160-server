@@ -77,7 +77,7 @@ describe('GET /videos/:userId', () => {
 	it('should get videos only belonging to this user', () => {
 		return chai.request(app)
 		.get('/api/videos/1')
-		.set('Authorization', SESSION_ID)
+		.set('Cookie', 'sessionId=' + SESSION_ID)
 		.then(res => {
 			expect(res).to.have.status(200);
 			expect(res).to.be.json;
@@ -90,7 +90,7 @@ describe('GET /videos/:userId', () => {
 	it('should refuse if authorization session id is incorrect', () => {
 		return chai.request(app)
 		.get('/api/videos/1')
-		.set('Authorization', INVALID_SID)
+		.set('Cookie', 'sessionId=' + INVALID_SID)
 		.catch(err => err.response)
 		.then(res => {
 			expect(res).to.have.status(401);
