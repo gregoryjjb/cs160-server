@@ -15,6 +15,8 @@ const authorization = (req, res, next) => {
         else {
             res.status(401).end('Access denied');
         }
+
+        return null; // To avoid unreturned promise
     })
     .catch(error => {
         res.status(401).send('Access denied');
