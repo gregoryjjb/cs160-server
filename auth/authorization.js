@@ -1,27 +1,21 @@
 var models = require('../models');
 
-const authorization = (req, res, next) => {
+const authorization = async (req, res, next) => {
     
-    var sessionId = req.cookies.sessionId; //req.headers.authorization;
+    var { sessionId } = req.cookies;
 
     if(sessionId) {
-        models.User.findOne({where: {
+        user = await models.User.findOne({where: {
             sessionId: sessionId
-        }})
-        .then(user => {
-            if(user) {
-                res.locals.userId = user.id;
-                next();
-            }
-            else {
-                res.status(401).end('Access denied');
-            }
-
-            return null; // To avoid unreturned promise
-        })
-        .catch(error => {
-            res.status(401).end('Access denied');
-        });
+		}});
+		
+		if(user) {
+			res.locals.userId = user.id;
+			next();
+		}
+		else {
+			res.status(401).end('Access denied');
+		}
     }
     else {
         res.status(401).end('Access denied');
