@@ -9,7 +9,7 @@ router.route('/')
 .get((req, res) => {
     res.send("Videos go here")
 })
-.post((req, res) => {
+.post(async (req, res) => {
     /** 
      * body: {
      *   videoData: {
@@ -18,55 +18,46 @@ router.route('/')
      * }
      */
 
-    var videoData = {
+    const videoData = {
         name: req.body.videoData.name,
         userId: res.locals.userId
-    }
-
-    //console.log("Would make new video", videoData);
-
-    models.Video.create(videoData)
-    .then(video => {
-        res.json(video);
-    })
-    .catch(error => {
-        res.end();
-    })
+	}
+	
+    const video = await models.Video.create(videoData);
+	
+	res.send(video);
 })
 
 router.route('/:userId')
-.get((req, res) => {
+.get(async (req, res) => {
     
-    var userId = res.locals.userId; //req.params.userId;
+    const { userId } = res.locals; //req.params.userId;
     
-    models.Video.findAll({
-        where: {userId: userId}
-    })
-    .then(videos => {
-        res.send(videos);
-    })
+    const videos = await models.Video.findAll({
+        where: { userId }
+	});
+	
+	res.send(videos);
 })
 
 router.route('/:userId/:videoId')
-.get((req, res) => {
-    var userId = req.params.userId;
-    var videoId = req.params.videoId;
+.get(async (req, res) => {
     
-    models.Video.findOne({
+	const { userId, videoId } = req.params;
+    
+    const video = await models.Video.findOne({
         where: {
-            id: videoId,
-            userId: userId
+			id: videoId,
+			userId
         }
-    })
-    .then(video => {
-        
-        if(video) {
-            res.send(video);
-        }
-        else {
-            res.status(404).send('Video not found');
-        }
-    })
+	});
+	
+	if(video) {
+		res.send(video);
+	}
+	else {
+		res.status(404).send('Video not found');
+	}
 })
 
 module.exports = router;
