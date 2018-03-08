@@ -4,7 +4,7 @@ var models = require('../models');
 
 router.get('/', (req, res) => {
 
-    var sessionId = req.headers.authorization;
+    var sessionId = req.cookies.sessionId;
 
     models.User.update({
         sessionId: null
