@@ -3,9 +3,11 @@
  */
 
 var express = require('express');
+var cookieParser = require('cookie-parser');
 var models = require('./models');
 
 var app = express();
+app.use(cookieParser());
 app.use(express.json());
 
 var api = express.Router();
