@@ -16,7 +16,11 @@ module.exports = (sequelize, DataTypes) => {
         loginDate: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW
-        }
+		},
+		loginIP: {
+			type: DataTypes.STRING,
+			isIP: true
+		}
     });
     
     User.associate = (models) => {

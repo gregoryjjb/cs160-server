@@ -2,7 +2,7 @@ var Sequelize = require('sequelize');
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
-var auth = require('../auth/auth');
+var parseToken = require('../auth/parse-token');
 var session = require('../auth/session');
 
 /** 
@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
     if(token) {
         const sessionKey = session.generateKey(token.substr(0, 30))
         
-        auth(token, (payload => {
+        parseToken(token, (payload => {
             
             models.User.findOne({
                 where: { googleId: payload.sub }
