@@ -16,9 +16,8 @@ var session = require('../auth/session');
  *   session: SESSION_ID (for continuing an old session)
  * }
  */
-router.post('/', (req, res) => {
-    const token = req.body.token;
-	const sessionId = req.body.sessionId;
+router.post('/', async (req, res) => {
+    const { token, sessionId } = req.body;
 	const ip = (
 		req.headers['x-forwarded-for'] ||
 		req.connection.remoteAddress ||
@@ -29,44 +28,39 @@ router.post('/', (req, res) => {
     if(token) {
         const sessionKey = session.generateKey(token.substr(0, 30))
         
-        parseToken(token, (payload => {
-            
-            models.User.findOne({
-                where: { googleId: payload.sub }
-            })
-            .then(user => {
-                if(user) {
-                    // Update session and login time of existing user
-                    user.updateAttributes({
-                        sessionId: sessionKey,
-						loginDate: new Date(),
-						loginIP: ip
-                    }) 
-                    .then(user => {
-                        res.json({
-                            user: user,
-                            firstLogin: false
-                        });
-                    })
-                }
-                else {
-                    // Create new user for first login
-                    models.User.create({
-                        googleId: payload.sub,
-                        firstname: payload.given_name,
-                        lastname: payload.family_name,
-                        email: payload.email,
-						sessionId: sessionKey,
-						loginIP: ip
-                    })
-                    .then(user => {
-                        res.json({
-                            user: user,
-                            firstLogin: true
-                        });
-                    })
-                }
-            });
+        parseToken(token, (async payload => {
+			
+			const user = await models.User.findOne({
+				where: { googleId: payload.sub }
+			});
+			
+			if(user) {
+				const updatedUser = await user.updateAttributes({
+					sessionId: sessionKey,
+					loginDate: new Date(),
+					loginIP: ip
+				});
+				
+				res.json({
+					user: updatedUser,
+					firstLogin: false
+				});
+			}
+			else {
+				const newUser = await models.User.create({
+					googleId: payload.sub,
+					firstname: payload.given_name,
+					lastname: payload.family_name,
+					email: payload.email,
+					sessionId: sessionKey,
+					loginIP: ip
+				});
+				
+				res.json({
+					user: newUser,
+					firstLogin: true
+				});
+			}
             
         }), (error => {
             res.status(400).json({
@@ -75,28 +69,27 @@ router.post('/', (req, res) => {
         }));
     }
     else if(sessionId) {
-        models.User.findOne({where: {
+        const user = await models.User.findOne({where: {
             sessionId: sessionId
         }})
-        .then(user => {
-            if(user) {
-                res.json({
-                    user: user,
-                    firstLogin: false
-                });
-            }
-            else {
-                res.status(400).json({
-					error: 'Session ID not found'
-				});
-            }
-        })
-        .catch(error => {
-            res.status(400).json({
-				error: error.message
+        
+		if(user) {
+			res.json({
+				user,
+				firstLogin: false
 			});
-        });
-    }
+		}
+		else {
+			res.status(400).json({
+				error: 'Session ID not found'
+			});
+		}
+	}
+	else {
+		res.status(400).json({
+			error: 'No session or token ID sent'
+		});
+	}
 });
 
 module.exports = router;
