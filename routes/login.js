@@ -18,7 +18,12 @@ var session = require('../auth/session');
  */
 router.post('/', (req, res) => {
     const token = req.body.token;
-    const sessionId = req.body.sessionId;
+	const sessionId = req.body.sessionId;
+	
+	console.log('x-forwarded-for', req.headers['x-forwarded-for'])
+	console.log('Connection RA:', req.connection.remoteAddress);
+	console.log('Socket RA:', req.socket.remoteAddress);
+	console.log('Both RA:', req.connection.socket.remoteAddress);
     
     if(token) {
         const sessionKey = session.generateKey(token.substr(0, 30))
