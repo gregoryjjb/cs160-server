@@ -74,6 +74,16 @@ describe('POST /login', () => {
 
 describe('GET /videos/:userId', () => {
 	
+	it('should NOT be unauthorized if proper session cookie is sent', () => {
+		return chai.request(app)
+		.get('/api/videos/1')
+		.set('Cookie', 'sessionId=' + SESSION_ID)
+		.then(res => {
+			expect(res).to.have.status(200);
+			expect(res).to.be.json;
+		})
+	})
+
 	it('should get videos only belonging to this user', () => {
 		return chai.request(app)
 		.get('/api/videos/1')
@@ -87,14 +97,22 @@ describe('GET /videos/:userId', () => {
 		})
 	})
 	
-	it('should refuse if authorization session id is incorrect', () => {
+	it('should refuse (401) if session id cookie is incorrect', () => {
 		return chai.request(app)
 		.get('/api/videos/1')
 		.set('Cookie', 'sessionId=' + INVALID_SID)
 		.catch(err => err.response)
 		.then(res => {
 			expect(res).to.have.status(401);
-			
+		})
+	})
+
+	it('should refuse (401) if no session id cookie is sent', () => {
+		return chai.request(app)
+		.get('/api/videos/1')
+		.catch(err => err.response)
+		.then(res => {
+			expect(res).to.have.status(401);
 		})
 	})
 })
