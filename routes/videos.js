@@ -37,8 +37,6 @@ router.route('/')
 router.route('/:userId')
 .get((req, res) => {
     
-    console.log(res.locals);
-    
     var userId = res.locals.userId; //req.params.userId;
     
     models.Video.findAll({
