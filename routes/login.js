@@ -19,11 +19,12 @@ var session = require('../auth/session');
 router.post('/', (req, res) => {
     const token = req.body.token;
 	const sessionId = req.body.sessionId;
-	
-	console.log('x-forwarded-for', req.headers['x-forwarded-for'])
-	console.log('Connection RA:', req.connection.remoteAddress);
-	console.log('Socket RA:', req.socket.remoteAddress);
-	console.log('Both RA:', req.connection.socket.remoteAddress);
+	const ip = (
+		req.headers['x-forwarded-for'] ||
+		req.connection.remoteAddress ||
+		req.socket.remoteAddress ||
+		req.connection.socket.remoteAddress
+	);
     
     if(token) {
         const sessionKey = session.generateKey(token.substr(0, 30))
@@ -38,7 +39,8 @@ router.post('/', (req, res) => {
                     // Update session and login time of existing user
                     user.updateAttributes({
                         sessionId: sessionKey,
-                        loginDate: new Date()
+						loginDate: new Date(),
+						loginIP: ip
                     }) 
                     .then(user => {
                         res.json({
@@ -54,7 +56,8 @@ router.post('/', (req, res) => {
                         firstname: payload.given_name,
                         lastname: payload.family_name,
                         email: payload.email,
-                        sessionId: sessionKey
+						sessionId: sessionKey,
+						loginIP: ip
                     })
                     .then(user => {
                         res.json({
