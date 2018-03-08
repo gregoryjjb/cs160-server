@@ -2,20 +2,19 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
 
-    var sessionId = req.cookies.sessionId;
+    var { sessionId } = req.cookies;
 
-    models.User.update({
+    await models.User.update({
         sessionId: null
     }, {
         where: {
-            sessionId: sessionId
+            sessionId
         }
-    })
-	.then(() => {
-		res.end();
 	});
+	
+	res.end();
 });
 
 module.exports = router;
