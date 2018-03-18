@@ -10,3 +10,6 @@ www/*
 
 # SQLite database
 *.sqlite
+
+# Videos
+videos/

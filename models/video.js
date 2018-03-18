@@ -2,7 +2,8 @@
 
 module.exports = (sequelize, DataTypes) => {
     var Video = sequelize.define('Video', {
-        name: DataTypes.STRING,
+		name: DataTypes.STRING,
+		path: DataTypes.STRING,
         length: DataTypes.FLOAT
     });
     
