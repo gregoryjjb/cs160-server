@@ -20,7 +20,7 @@ router.route('/')
 	const {name} = req.body;
 	const {file} = req.files;
 	
-	let video = await models.Video.create({ name });
+	let video = await models.Video.create({ name, userId: res.locals.userId });
 	
 	const filename = video.id + '_' + file.name;
 	
