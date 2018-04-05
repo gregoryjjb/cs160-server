@@ -2,6 +2,11 @@
  * HTTP Server for API
  */
 
+// Load ENV variables
+const dotenv = require('dotenv');
+dotenv.config();
+dotenv.config({path: '.env.local'});
+
 var http = require('http');
 var models = require('./models');
 var app = require('./app');

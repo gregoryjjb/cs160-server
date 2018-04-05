@@ -1,6 +1,14 @@
 const { OAuth2Client } = require('google-auth-library');
-const audience = "15965114724-3b71qboka3ij341kddr78df42et1nt7q.apps.googleusercontent.com";
+const audience = process.env.GOOGLE_CLIENT_ID;
 var gapiClient = new OAuth2Client(audience, '', '');
+
+if(audience) {
+    console.log("Google Sign-in Initialized");
+    console.log("\tClient ID:", audience);
+}
+else {
+    console.error("ERROR: No Google Client ID set, sign-in is insecure. Set GOOGLE_CLIENT_ID");
+}
 
 var parser = (idToken, onSuccess, onFailure) => {
     gapiClient.verifyIdToken({idToken, audience})

@@ -13,3 +13,6 @@ www/*
 
 # Videos
 videos/
+
+# Environment files
+.env.local
