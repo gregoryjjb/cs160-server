@@ -11,7 +11,7 @@
   ```
   GOOGLE_CLIENT_ID=your_client_id.apps.googleusercontent.com
   ```
-  with your client ID. (Google Sign-in will fail if this is not set up properly.)
+  with your client ID. (Google Sign-in will fail if this is not set up properly.) DO NOT put it in `.env` as that one is version-controlled.
 * While in the repo, run `npm install`
 * Once it's done installing run `npm start`
 * Your server will be running at [localhost:4000](http://localhost:4000), try navigating to it and to [/api](http://localhost:4000/api).
