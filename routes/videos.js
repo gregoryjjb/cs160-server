@@ -32,27 +32,24 @@ router.route('/')
 	const finalPath = './videos/' + filename;
 	const tempPath = './videos/' + tempFilename;
 
-	console.log("MOVING TO", tempPath);
+	console.log("Processing job requested for", filename);
+	
+	console.log("\tMoving file", tempPath);
 	file.mv(tempPath);
-	console.log("FINISHED MOVE");
+	console.log("\tFinished move");
 
 	const cvTempPath = __dirname + '/../videos/' + tempFilename;
 	const cvFinalPath = __dirname + '/../videos/' + filename;
 
 	const command = `./cvprocessor	-f "${cvTempPath}" -o "${cvFinalPath}"`;
 
-	console.log("COMMAND: !!!!!!!!!!");
-	console.log(command);
-	console.log("ENDCOMMAND !!!!!!!!");
-
-
-	console.log("BEGINNING PROCESSING");
+	console.log("\tStart processing");
 	const { stdout, stderr } = await exec(command, {cwd: './processing/cs160/CVProcessor/dist/Release/GNU-Linux/', maxBuffer: 1024 * 10000});
-	console.log("FINISHED PROCESSING");
+	console.log("\tEnd processing");
 	
 	video = await video.update({path: '/api/videos/files/' + filename});
 
-	fs.unlink(tempPath);
+	fs.unlink(tempPath, (err) => {} );
 	
 	res.send({});
 })
