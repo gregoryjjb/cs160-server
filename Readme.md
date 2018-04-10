@@ -2,16 +2,18 @@
 
 ## Installation:
 
-* Download [Node](https://nodejs.org/) (including NPM)
+* Download & install [Node.js](https://nodejs.org/) (including NPM)
 * Install SQLite
-  * On Linux (Debian) just run
-    > sudo apt-get install sqlite3
+  * On Linux (Debian) just run `sudo apt-get install sqlite3`
   * On Windows, download the [command-line tool binaries](https://www.sqlite.org/download.html) and add them to your PATH
 * Clone the repo
-* CD into the repo and run
-  > npm install
-* Once it's done installing run
-  > npm start
+* Create a file `.env.local` in the root of the repo and insert the following line:
+  ```
+  GOOGLE_CLIENT_ID=your_client_id.apps.googleusercontent.com
+  ```
+  with your client ID. (Google Sign-in will fail if this is not set up properly.) DO NOT put it in `.env` as that one is version-controlled.
+* While in the repo, run `npm install`
+* Once it's done installing run `npm start`
 * Your server will be running at [localhost:4000](http://localhost:4000), try navigating to it and to [/api](http://localhost:4000/api).
 
 ### Communication with the Frontend

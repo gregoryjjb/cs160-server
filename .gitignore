@@ -16,3 +16,6 @@ videos/
 
 # Processing
 processing/
+
+# Environment files
+.env.local
