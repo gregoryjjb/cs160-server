@@ -23,7 +23,7 @@ var parser = (idToken, onSuccess, onFailure) => {
         });
     }
     else {
-        onFailure({err: "No audience specified"});
+        onFailure({message: "No audience specified"});
     }
 }
 
