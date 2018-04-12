@@ -4,7 +4,8 @@ module.exports = (sequelize, DataTypes) => {
     var Video = sequelize.define('Video', {
 		name: DataTypes.STRING,
 		path: DataTypes.STRING,
-        length: DataTypes.FLOAT
+        length: DataTypes.FLOAT,
+        data: DataTypes.TEXT,
     });
     
     Video.associate = (models) => {
