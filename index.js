@@ -8,6 +8,7 @@ dotenv.config();
 dotenv.config({path: '.env.local'});
 
 var http = require('http');
+var streamSocket = require('./utils/stream-socket');
 var models = require('./models');
 var app = require('./app');
 
@@ -32,22 +33,7 @@ models.sequelize.sync()
     console.log("\tPort:", port);
     console.log("\tEnvironment:", env);
 
-    var io = require('socket.io')(server);
-    var ss = require('socket.io-stream');
-    var fs = require('fs');
-
-    io.on('connection', socket => {
-        console.log('User connected to socket');
-
-        socket.on('disconnect', () => {
-            console.log('User disconnected');
-        })
-
-        ss(socket).on('vid', stream => {
-            console.log('Got a stream!');
-
-        })
-    })
+    var io = streamSocket(server);
 });
 
 module.exports = server;

@@ -6,8 +6,6 @@ var fileUpload = require('express-fileupload');
 var models = require('../models');
 var authorization = require('../auth/authorization');
 
-var parseStdout = require('../utils/parse-stdout');
-
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const fs = require('fs');
@@ -49,7 +47,7 @@ router.route('/')
 	const { stdout, stderr } = await exec(command, {cwd: './processing/cs160/CVProcessor/dist/Release/GNU-Linux/', maxBuffer: 1024 * 10000});
 	console.log("\tEnd processing");
 	
-	fs.writeFile('./output.txt', stdout, (err) => {});
+	//fs.writeFile('./output.txt', stdout, (err) => {});
 	
 	video = await video.update({path: '/api/videos/files/' + filename, data: stdout});
 
