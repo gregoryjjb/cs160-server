@@ -19,6 +19,10 @@ module.exports = function(server) {
             var timestamp = new Date().getTime();
             var args = ['-i', 'pipe:0', /*'-f', 'rawvideo', '-vcodec', 'rawvideo','-c', '-copy',*/ `./videos/ffmpegout_${timestamp}.avi`];
             
+            /*var outputFilePath = `${__dirname}/../videos/ffmpegout_${timestamp}.avi`
+            var cvArgs = ['-s', 'pipe:0', '-o', outputFilePath];
+            var options = {cwd: './processing/cs160/CVProcessor/dist/Release/GNU-Linux/', maxBuffer: 1024 * 10000};*/
+            
             var ffmpeg = child_process.spawn('ffmpeg', args);
             
             ffmpeg.stdout.on('data', (data) => {console.log(data)});
