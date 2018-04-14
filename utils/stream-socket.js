@@ -17,11 +17,24 @@ module.exports = function(server) {
             console.log('Got a stream!');
             
             var timestamp = new Date().getTime();
-            var args = ['-i', 'pipe:0', /*'-f', 'rawvideo', '-vcodec', 'rawvideo','-c', '-copy',*/ `./videos/ffmpegout_${timestamp}.avi`];
+            //var args = ['-i', 'pipe:0', /*'-f', 'rawvideo', '-vcodec', 'rawvideo','-c', '-copy',*/ `./videos/ffmpegout_${timestamp}.avi`];
+            var args = ['-i', 'pipe:0', '-f', 'webm', '-vcodec', 'vp8', `pipe:1`];
             
             /*var outputFilePath = `${__dirname}/../videos/ffmpegout_${timestamp}.avi`
             var cvArgs = ['-s', 'pipe:0', '-o', outputFilePath];
             var options = {cwd: './processing/cs160/CVProcessor/dist/Release/GNU-Linux/', maxBuffer: 1024 * 10000};*/
+            
+            /*var argsTEST = ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=avg_frame_rate,,width,height', '-of', 'default=noprint_wrappers=1:nokey=1', 'pipe:0'];
+            var ffprobe = child_process.spawn('ffprobe', argsTEST);
+            ffprobe.on('error', err => {
+                console.log("TEST HAD ERR");
+                console.log(err);
+            })
+            ffprobe.stdin.on('error', err => {
+                console.log("TESTSTDIN HAD ERR");
+                console.log(err);
+            })
+            stream.pipe(ffprobe.stdin);*/
             
             var ffmpeg = child_process.spawn('ffmpeg', args);
             
@@ -35,6 +48,11 @@ module.exports = function(server) {
                 console.log("############################################# ERROR");
                 console.log(err);
             })
+            
+            var backStream = ss.createStream();
+            ffmpeg.stdout.pipe(backStream);
+            
+            ss(socket).emit('vid-back', backStream);
             
             //let file = fs.createWriteStream(`./videos/streamed_${timestamp}`);
             //stream.pipe(file);
