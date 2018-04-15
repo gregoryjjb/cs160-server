@@ -7,6 +7,7 @@ var models = require('../models');
 var authorization = require('../auth/authorization');
 
 const util = require('util');
+const child_process = require('child_process');
 const exec = util.promisify(require('child_process').exec);
 const fs = require('fs');
 
@@ -59,7 +60,15 @@ router.route('/')
 
 router.route('/stream')
 .get((req, res) => {
-	res.send('Streaming will be here');
+	var args = ['-re', '-i', '/home/greg/Videos/problem.mp4', '-f', 'rtsp', '-muxdelay', '0.1', `rtsp://localhost:5545/node.sdp`];
+	var ffmpeg = child_process.spawn('ffmpeg', args);
+	ffmpeg.stdout.on('data', (data) => {console.log(data)});
+	ffmpeg.stderr.on('data', (data) => {console.log(data)});
+	//stream.pipe(ffmpeg.stdin);
+	ffmpeg.stdin.on('error', err => {
+		console.log("############################################# ERROR");
+		console.log(err);
+	})
 })
 
 router.route('/:userId')
