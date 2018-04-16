@@ -3,6 +3,7 @@ const exec = util.promisify(require('child_process').exec);
 const child_process = require('child_process');
 const ss = require('socket.io-stream');
 const fs = require('fs');
+const crypto = require("crypto");
 
 const config = {
     executable: './cvprocessor',
@@ -46,10 +47,18 @@ processing.processFile = async function(file, filename) {
 }
 
 function Stream(stream, callback) {
+    // Stream names
+    this.streamName = crypto.randomBytes(8).toString('hex') + '.mp4';
+    this.rawStreamName = 'raw-' + this.streamName;
+    
+    console.log('Generated stream names:');
+    console.log('\t' + this.rawStreamName);
+    console.log('\t' + this.streamName);
+    
     // Arguments
-    this.streamToRtspArgs = ['-re', '-i', 'pipe:0', '-f', 'rtsp', '-muxdelay', '0.1', `rtsp://localhost:5545/foo.mp4`];
-    this.cvArgs = ['-s', `rtsp://localhost:554/foo.mp4`];
-    this.rtspToStreamArgs = ['-i', `${config.rtspSource}/processed.mp4`, '-f', 'webm', '-vcodec', 'vp8', 'pipe:1'];
+    this.streamToRtspArgs = ['-re', '-i', 'pipe:0', '-f', 'rtsp', '-muxdelay', '0.1', `${config.rtspTarget}/${this.rawStreamName}`];
+    this.cvArgs = ['-s', `${config.rtspSource}/${this.rawStreamName}`, '-o', `${config.rtspTarget}/${this.streamName}`];
+    this.rtspToStreamArgs = ['-i', `${config.rtspSource}/${this.streamName}`, '-f', 'webm', '-vcodec', 'vp8', 'pipe:1'];
     
     // Child processes
     this.ffmpeg;
