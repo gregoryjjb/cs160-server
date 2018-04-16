@@ -83,7 +83,7 @@ function Stream(stream, callback) {
             this.cv.stdout.pipe(process.stdout);
             this.cv.stderr.pipe(process.stderr);
         }
-    }, 4000 );
+    }, 6000 );
     
     // Turn RTSP back into node stream
     this.ffmpegTO = setTimeout(() => {
@@ -91,7 +91,7 @@ function Stream(stream, callback) {
         var backStream = ss.createStream();
         this.ffmpeg2.stdout.pipe(backStream);
         callback(backStream);
-    }, 8000 );
+    }, 12000 );
 }
 
 Stream.prototype.kill = function() {
