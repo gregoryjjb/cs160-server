@@ -3,6 +3,7 @@
  */
 
 var express = require('express');
+var fs = require('fs');
 var cookieParser = require('cookie-parser');
 var models = require('./models');
 
@@ -27,7 +28,14 @@ api.get('/', function(req, res) {
 app.use('/api', api);
 
 app.get('/', function(req, res) {
-    res.send("Node server running!");
+    const indexHtml = __dirname + '/www/index.html';
+    
+    if(fs.existsSync(indexHtml)) {
+        res.sendFile(__dirname + '/www/index.html');
+    }
+    else {
+        res.send("Node server running, www/index.html not found.");
+    }
 });
 
 app.use(express.static('www'));
