@@ -1,3 +1,8 @@
+// Load ENV variables
+const dotenv = require('dotenv');
+dotenv.config();
+dotenv.config({path: '.env.local'});
+
 const models = require('../models');
 const fs = require('fs');
 const path = require('path');
