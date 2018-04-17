@@ -15,7 +15,8 @@ www/*
 videos/
 
 # Processing
-processing/
+processing/*
+!processing/info.txt
 
 # Environment files
 .env.local
