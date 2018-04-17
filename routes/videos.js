@@ -1,14 +1,10 @@
 var express = require('express');
 var router = express.Router();
-//var multer = require('multer');
-//var upload = multer({dest: 'videos/'});
 var fileUpload = require('express-fileupload');
 var models = require('../models');
 var authorization = require('../auth/authorization');
 
-//const util = require('util');
 const child_process = require('child_process');
-//const exec = util.promisify(require('child_process').exec);
 const fs = require('fs');
 
 const processing = require('../utils/processing');
