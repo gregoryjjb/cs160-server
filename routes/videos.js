@@ -29,7 +29,11 @@ router.route('/')
 	
 	let processingData = await processing.processFile(file, filename);
 	
-	video = await video.update({path: '/api/videos/files/' + filename, data: processingData});
+	video = await video.update({
+		filename,
+		path: '/api/videos/files/' + filename,
+		data: processingData,
+	});
 	
 	res.send({});
 })
@@ -60,6 +64,31 @@ router.route('/:userId/:videoId')
 	
 	if(video) {
 		res.send(video);
+	}
+	else {
+		res.status(404).send('Video not found');
+	}
+})
+.delete(async (req, res) => {
+	
+	const { userId, videoId } = req.params;
+	
+	const video = await models.Video.findOne({
+        where: {
+			id: videoId,
+			userId
+        }
+	});
+	
+	const filePath = './videos/' + video.filePath;
+	
+	if(video) {
+		if(video.filename && fs.existsSync(filePath)) {
+			fs.unlink(filePath);
+		}
+		
+		await video.destroy();
+		res.status(204).end();
 	}
 	else {
 		res.status(404).send('Video not found');
