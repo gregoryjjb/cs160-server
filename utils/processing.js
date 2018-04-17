@@ -20,8 +20,9 @@ const processing = {};
 processing.processFile = async function(file, filename) {
     
     const tempFilename = 'TEMP_' + filename;
+    const finalFilename = filename.replace(/\.[^/.]+$/, "") + ".mp4";
     
-    const finalPath = './videos/' + filename;
+    const finalPath = './videos/' + finalFilename;
     const tempPath = './videos/' + tempFilename;
     
     console.log(ts() + "Processing job requested for", filename);
@@ -33,7 +34,7 @@ processing.processFile = async function(file, filename) {
     console.log(ts() + "\tFinished move");
     
     const cvTempPath = __dirname + '/../videos/' + tempFilename;
-	const cvFinalPath = __dirname + '/../videos/' + filename;
+	const cvFinalPath = __dirname + '/../videos/' + finalFilename;
     const cvCommand = `./${config.executable}	-f "${cvTempPath}" -o "${cvFinalPath}"`;
     
     console.log(ts() + "\tStarting processing...");
