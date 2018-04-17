@@ -20,7 +20,7 @@ const processing = {};
 processing.processFile = async function(file, filename) {
     
     const tempFilename = 'TEMP_' + filename;
-    const finalFilename = filename.replace(/\.[^/.]+$/, "") + ".mp4";
+    const finalFilename = filename.replace(/\.[^/.]+$/, "") + ".webm";
     
     const finalPath = './videos/' + finalFilename;
     const tempPath = './videos/' + tempFilename;
@@ -44,7 +44,10 @@ processing.processFile = async function(file, filename) {
     // Delete temporary file
     fs.unlink(tempPath, (err) => {} );
     
-    return stdout;
+    return {
+        processingData: stdout,
+        processedFilename: finalFilename
+    };
 }
 
 function Stream(stream, callback) {

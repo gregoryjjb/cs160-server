@@ -27,11 +27,11 @@ router.route('/')
 	
 	const filename = video.id + '_' + file.name;
 	
-	let processingData = await processing.processFile(file, filename);
+	let { processingData, processedFilename } = await processing.processFile(file, filename);
 	
 	video = await video.update({
-		filename,
-		path: '/api/videos/files/' + filename,
+		filename: processedFilename,
+		path: '/api/videos/files/' + processedFilename,
 		data: processingData,
 	});
 	
