@@ -3,7 +3,8 @@ const exec = util.promisify(require('child_process').exec);
 const child_process = require('child_process');
 const ss = require('socket.io-stream');
 const fs = require('fs');
-const crypto = require("crypto");
+const crypto = require('crypto');
+const devnull = require('dev-null');
 
 const config = {
     executable: './cvprocessor',
@@ -62,7 +63,7 @@ function Stream(stream, callback) {
     // Arguments
     this.streamToRtspArgs = ['-re', '-i', 'pipe:0', '-f', 'rtsp', '-muxdelay', '0.1', `${config.rtspTarget}/${this.rawStreamName}`];
     this.cvArgs = ['-s', `${config.rtspSource}/${this.rawStreamName}`, '-o', `${config.rtspTarget}/${this.streamName}`];
-    this.rtspToStreamArgs = ['-i', `${config.rtspSource}/${this.streamName}`, '-f', 'webm', '-vcodec', 'vp8', 'pipe:1'];
+    this.rtspToStreamArgs = ['-i', `${config.rtspSource}/${this.streamName}`, '-f', 'webm', '-vcodec', 'vp8', '-g', '1', 'pipe:1'];
     
     // Child processes
     this.ffmpeg;
