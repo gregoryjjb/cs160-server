@@ -62,8 +62,14 @@ function Stream(stream, callback) {
     
     // Arguments
     this.streamToRtspArgs = ['-re', '-i', 'pipe:0', '-f', 'rtsp', '-muxdelay', '0.1', `${config.rtspTarget}/${this.rawStreamName}`];
-    this.cvArgs = ['-s', `${config.rtspSource}/${this.rawStreamName}`, '-o', `${config.rtspTarget}/${this.streamName}`];
+    //this.cvArgs = ['-s', `${config.rtspSource}/${this.rawStreamName}`, '-o', `${config.rtspTarget}/${this.streamName}`];
     this.rtspToStreamArgs = ['-i', `${config.rtspSource}/${this.streamName}`, '-f', 'webm', '-vcodec', 'vp8', '-g', '1', 'pipe:1'];
+    
+    this.cvArgs = [
+        '-s', `${config.rtspSource}/${this.rawStreamName}`,
+        '-o', `pipe:1`,
+        '-of', '-f webm -c:v vp8 -g 1',
+    ];
     
     // Child processes
     this.ffmpeg;
@@ -92,20 +98,27 @@ function Stream(stream, callback) {
     this.cvTO = setTimeout(() => {
         this.cv = child_process.spawn(config.executable, this.cvArgs, {cwd: config.cwd});
         this.cv.on('close', (code, signal) => console.log('CVProcessor exited with code', code, 'signal', signal));
+        
+        //this.cv.stdout.pipe(process.stdout);
+        
+        var backStream = ss.createStream();
+        this.cv.stdout.pipe(backStream);
+        callback(backStream)
+        
         // Log
-        if(true) {
-            this.cv.stdout.pipe(process.stdout);
-            this.cv.stderr.pipe(process.stderr);
-        }
+        //if(true) {
+        //    this.cv.stdout.pipe(process.stdout);
+        //    this.cv.stderr.pipe(process.stderr);
+        //}
     }, 6000 );
     
     // Turn RTSP back into node stream
-    this.ffmpegTO = setTimeout(() => {
+    /*this.ffmpegTO = setTimeout(() => {
         this.ffmpeg2 = child_process.spawn('ffmpeg', this.rtspToStreamArgs);
         var backStream = ss.createStream();
         this.ffmpeg2.stdout.pipe(backStream);
         callback(backStream);
-    }, 12000 );
+    }, 12000 );*/
 }
 
 Stream.prototype.kill = function() {
