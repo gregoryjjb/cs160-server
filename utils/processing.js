@@ -68,7 +68,7 @@ function Stream(stream, callback) {
     this.cvArgs = [
         '-s', `${config.rtspSource}/${this.rawStreamName}`,
         '-o', `pipe:1`,
-        '-of', '-f webm -c:v vp8 -g 1',
+        '-of', '-f webm -c:v vp8 -b:v .5M -g 1',
     ];
     
     // Child processes
