@@ -62,9 +62,6 @@ function Stream(stream, callback) {
     
     // Arguments
     this.streamToRtspArgs = ['-re', '-i', 'pipe:0', '-f', 'rtsp', '-muxdelay', '0.1', `${config.rtspTarget}/${this.rawStreamName}`];
-    //this.cvArgs = ['-s', `${config.rtspSource}/${this.rawStreamName}`, '-o', `${config.rtspTarget}/${this.streamName}`];
-    this.rtspToStreamArgs = ['-i', `${config.rtspSource}/${this.streamName}`, '-f', 'webm', '-vcodec', 'vp8', '-g', '1', 'pipe:1'];
-    
     this.cvArgs = [
         '-s', `${config.rtspSource}/${this.rawStreamName}`,
         '-o', `pipe:1`,
@@ -74,11 +71,9 @@ function Stream(stream, callback) {
     // Child processes
     this.ffmpeg;
     this.cv;
-    this.ffmpeg2;
     
     // Timeouts
     this.cvTO;
-    this.ffmpegTO;
     
     // First FFMPEG
     this.ffmpeg = child_process.spawn('ffmpeg', this.streamToRtspArgs);
@@ -89,10 +84,10 @@ function Stream(stream, callback) {
     });
     this.ffmpeg.on('close', code => console.log("FFMPEG exited with code", code));
     // Log
-    if(true) {
+    //if(true) {
         this.ffmpeg.stdout.pipe(process.stdout);
         this.ffmpeg.stderr.pipe(process.stderr);
-    }
+    //}
     
     // Run processing on RTSP
     this.cvTO = setTimeout(() => {
@@ -107,18 +102,10 @@ function Stream(stream, callback) {
         
         // Log
         //if(true) {
-        //    this.cv.stdout.pipe(process.stdout);
-        //    this.cv.stderr.pipe(process.stderr);
+            //this.cv.stdout.pipe(process.stdout);
+            this.cv.stderr.pipe(process.stderr);
         //}
     }, 6000 );
-    
-    // Turn RTSP back into node stream
-    /*this.ffmpegTO = setTimeout(() => {
-        this.ffmpeg2 = child_process.spawn('ffmpeg', this.rtspToStreamArgs);
-        var backStream = ss.createStream();
-        this.ffmpeg2.stdout.pipe(backStream);
-        callback(backStream);
-    }, 12000 );*/
 }
 
 Stream.prototype.kill = function() {
@@ -137,16 +124,8 @@ Stream.prototype.kill = function() {
     else {
         console.log('CVProcessor not started so not killed');
     }
-    if(this.ffmpeg2 && this.ffmpeg2.kill) {
-        console.log('Killing FFMPEG2');
-        this.ffmpeg2.kill();
-    }
-    else {
-        console.log('FFMPEG2 not started so not killed');
-    }
     
     clearTimeout(this.cvTO);
-    clearTimeout(this.ffmpegTO);
 }
 
 processing.Stream = Stream;

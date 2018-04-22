@@ -80,11 +80,10 @@ router.route('/:userId/:videoId')
         }
 	});
 	
-	const filePath = './videos/' + video.filePath;
-	
 	if(video) {
+		const filePath = './videos/' + video.filename;
 		if(video.filename && fs.existsSync(filePath)) {
-			fs.unlink(filePath);
+			fs.unlink(filePath, () => {});
 		}
 		
 		await video.destroy();
