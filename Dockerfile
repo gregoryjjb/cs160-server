@@ -21,5 +21,5 @@ EXPOSE 4000
 
 # Bundle app source
 COPY . .
-RUN chmod +x docker-entrypoint.sh
+RUN chmod +x *-entrypoint.sh
 ENTRYPOINT "./docker-entrypoint.sh"
