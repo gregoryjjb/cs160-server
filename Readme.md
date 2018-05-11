@@ -1,11 +1,19 @@
 # Server
 
+A web server for [this video processing pipeline](https://github.com/gregdumb/cs160) and [this frontend](https://github.com/gregdumb/cs160-frontend). The user can sign in with a Google account and either upload a video file or stream video from their webcam. The processing pipeline runs the OpenFace nerual network on the video/stream and draws delaunay triangles on the face for visualization.
+
+### Demo Videos
+
+* [Video uploading](https://youtu.be/9RE6Nfh6KuA)
+* [Video streaming](https://youtu.be/5yjUkBXFWF0)
+
 ## Installation:
 
-* Download & install [Node.js](https://nodejs.org/) (including NPM)
+* Download & install [Node.js](https://nodejs.org/) 8 (including NPM)
 * Install SQLite
   * On Linux (Debian) just run `sudo apt-get install sqlite3`
   * On Windows, download the [command-line tool binaries](https://www.sqlite.org/download.html) and add them to your PATH
+    * Note that the processing pipeline only supports Debian-based Linux
 * Clone the repo
 * Create a file `.env.local` in the root of the repo and insert the following line:
   ```
