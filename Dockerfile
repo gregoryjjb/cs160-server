@@ -1,4 +1,4 @@
-FROM node:carbon
+FROM node:9
 
 # Optional: uncomment for SQLite3
 #RUN apt-get update && \
@@ -17,8 +17,9 @@ RUN npm install
 # If you are building your code for production
 # RUN npm install --only=production
 
+EXPOSE 4000
+
 # Bundle app source
 COPY . .
-
-EXPOSE 4000
-CMD [ "npm", "start" ]
+RUN chmod +x *-entrypoint.sh
+ENTRYPOINT "./docker-entrypoint.sh"
